@@ -79,6 +79,21 @@ label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 .hl li{padding:10px 0;border-bottom:1px solid var(--bd);font-size:14px}
 .hl small{display:block;color:var(--mut);font-size:12px;margin-top:2px}
 .code{font-size:28px;letter-spacing:4px;font-weight:700;text-align:center;color:var(--blue);background:#0c1d30;border-radius:12px;padding:14px;margin:8px 0}
+.emp .own-only{display:none!important}
+.emp .cg{display:none}
+.res{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-top:14px}
+.res h3{margin:0 0 10px;font-size:17px}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rg>div{background:#0c1622;border:1px solid var(--bd);border-radius:12px;padding:10px 12px}
+.rg small{display:block;color:var(--mut);font-size:12px}
+.rg b{font-size:18px}
+.rg .gan{grid-column:1/-1;background:#0c2418;border-color:#1f7a4a}
+.rg .gan b{color:var(--ok);font-size:22px}
+.res .tw2{overflow-x:auto;margin-top:12px;border:1px solid var(--bd);border-radius:12px}
+.res table{min-width:0}
+.res td,.res th{padding:10px 8px;font-size:13px}
+.res tfoot td{font-weight:700;border-top:1px solid var(--bd);border-bottom:0}
+.hl .ok2{border-color:var(--ok);color:var(--ok);margin-left:6px}
 .hl .q2{float:right;background:none;border:1px solid var(--bad);color:var(--bad);border-radius:8px;padding:3px 10px}
 .sale.in{border-color:#1f7a4a}
 .sale.in button{background:linear-gradient(90deg,#1fd37a,#0f9b57)}
@@ -116,21 +131,31 @@ label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 
 <button class="cta" id="add">+ Agregar producto</button>
 
-<div class="sum">
+<div class="sum own-only">
   <div class="k"><small>Productos</small><b id="sN">0</b></div>
   <div class="k g"><small>Ganancia potencial</small><b id="sG">$ 0</b></div>
   <div class="k"><small>Stock a costo</small><b id="sC">$ 0</b></div>
   <div class="k"><small>Stock a venta</small><b id="sV">$ 0</b></div>
 </div>
-<div class="set"><div><b>% Ganancia general</b><small>Se usa si el producto no tiene el suyo</small></div><input id="gp" type="number" inputmode="decimal" step="0.1" min="0"></div>
+<div class="set own-only"><div><b>% Ganancia general</b><small>Se usa si el producto no tiene el suyo</small></div><input id="gp" type="number" inputmode="decimal" step="0.1" min="0"></div>
 <button class="ghost" id="hb">Ver historial de movimientos</button>
 <button class="ghost" id="eb" hidden>Empleados y código de invitación</button>
 
 <input class="q" id="q" type="search" placeholder="Buscar producto…">
 <div class="tw"><table>
-  <thead><tr><th>Producto</th><th>U/Pack</th><th>% Gan.</th><th>$/Unidad</th><th>$/Pack</th><th>Packs</th><th>Stock</th><th>Estado</th></tr></thead>
+  <thead><tr><th>Producto</th><th>U/Pack</th><th class="cg">% Gan.</th><th>$/Unidad</th><th>$/Pack</th><th>Packs</th><th>Stock</th><th>Estado</th></tr></thead>
   <tbody id="tb"></tbody>
 </table><div class="empty" id="em"></div></div>
+<div class="res" id="res" hidden>
+  <h3>Resumen del almacén</h3>
+  <div class="rg">
+    <div><small>Mercadería</small><b id="rU">0</b><small id="rP"></small></div>
+    <div><small>Invertido (precio por mayor)</small><b id="rC">$ 0</b></div>
+    <div><small>Venta total (precio final)</small><b id="rV">$ 0</b></div>
+    <div class="gan"><small>Ganancia de todo el stock</small><b id="rG">$ 0</b><small id="rPct"></small></div>
+  </div>
+  <div class="tw2"><table><thead><tr><th>Producto</th><th>Stock</th><th>Invertido</th><th>Ganancia</th></tr></thead><tbody id="rb"></tbody><tfoot id="rf"></tfoot></table></div>
+</div>
 <div class="hint" id="hint">Tocá un producto para ver su detalle y registrar una venta</div>
 </div>
 
@@ -139,10 +164,10 @@ label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
   <label>Producto</label><input id="fN" placeholder="Ej: Yerba mate 1 kg">
   <div class="two">
     <div><label>Unidades por pack</label><input id="fU" type="number" inputmode="numeric" min="1" placeholder="1"></div>
-    <div><label>Precio por mayor (por pack)</label><input id="fP" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0"></div>
+    <div id="wP"><label>Precio por mayor (por pack)</label><input id="fP" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0"></div>
   </div>
-  <label>% Ganancia (vacío = usa el general)</label>
-  <input id="fG" type="number" inputmode="decimal" step="0.1" min="0" placeholder="General">
+  <div id="wG"><label>% Ganancia (vacío = usa el general)</label>
+  <input id="fG" type="number" inputmode="decimal" step="0.1" min="0" placeholder="General"></div>
   <div class="two">
     <div><label>Cantidad de packs</label><input id="fK" type="number" inputmode="decimal" min="0" step="any" placeholder="Ej: 20"></div>
     <div><label>Stock mínimo (en unidades)</label><input id="fM" type="number" inputmode="numeric" min="0" placeholder="5"></div>
@@ -171,7 +196,7 @@ label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 
 <div class="ov" id="ov3"><div class="sheet">
   <h2>Empleados</h2>
-  <p class="cd" style="margin:0">Pasale este código a tu empleado. Él crea su cuenta y elige “Unirme a un negocio”.</p>
+  <p class="cd" style="margin:0">Pasale este código a tu empleado o socio. Crea su cuenta y elige “Unirme a un negocio”. Si es tu socio, después tocá “Hacer socio”.</p>
   <div class="code" id="ec">…</div>
   <button class="ghost" id="er">Cambiar código</button>
   <ul class="hl" id="el"></ul>
@@ -184,7 +209,8 @@ const $=i=>document.getElementById(i);
 const fmt=new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",minimumFractionDigits:0,maximumFractionDigits:2});
 const fmtN=n=>new Intl.NumberFormat("es-AR",{maximumFractionDigits:2}).format(n);
 let S=null,me=null,items=[],gen=30,biz="Panel de Stock",editId=null,timer=null;
-const isOwner=()=>!!me&&me.rol==="dueno";
+const isOwner=()=>!!me&&(me.rol==="dueno"||me.rol==="socio");
+const isMain=()=>!!me&&me.rol==="dueno";
 const esc=t=>{const d=document.createElement("div");d.textContent=t==null?"":t;return d.innerHTML};
 const errMsg=e=>e&&e.name==="TypeError"?"Sin conexión a internet":(e&&e.message)||"Error";
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3200)}
@@ -229,16 +255,27 @@ function logout(){
 }
 function render(){
   const own=isOwner();
-  $("bn").textContent=biz;$("who").textContent=me.nombre+(own?" (dueño)":"");
+  $("bn").textContent=biz;$("who").textContent=me.nombre+(me.rol==="dueno"?" (dueño)":me.rol==="socio"?" (socio)":"");
   $("add").hidden=!own;$("eb").hidden=!own;$("gp").disabled=!own;
   if(document.activeElement!==$("gp"))$("gp").value=gen;
   let c=0,v=0;
   items.forEach(it=>{const s=Number(it.s)||0;c+=s*costU(it);v+=s*unitP(it)});
   $("sN").textContent=items.length;$("sC").textContent=fmt.format(c);$("sV").textContent=fmt.format(v);$("sG").textContent=fmt.format(v-c);
+  $("app").classList.toggle("emp",!own);$("res").hidden=!own;
+  if(own){
+    let tu=0,rows="";
+    items.forEach(it=>{const s=Number(it.s)||0,ci=s*costU(it),vi=s*unitP(it);tu+=s;
+      rows+=`<tr><td>${esc(it.n)}</td><td>${s}</td><td>${fmt.format(ci)}</td><td class="pr">${fmt.format(vi-ci)}</td></tr>`});
+    $("rb").innerHTML=rows||'<tr><td colspan="4" style="text-align:center;color:var(--mut)">Todavía no hay productos</td></tr>';
+    $("rf").innerHTML=`<tr><td>TOTAL</td><td>${fmtN(tu)}</td><td>${fmt.format(c)}</td><td class="pr">${fmt.format(v-c)}</td></tr>`;
+    $("rU").textContent=fmtN(tu)+" unidades";$("rP").textContent=items.length+(items.length===1?" producto":" productos");
+    $("rC").textContent=fmt.format(c);$("rV").textContent=fmt.format(v);$("rG").textContent=fmt.format(v-c);
+    $("rPct").textContent=c>0?"Ganás "+fmtN((v-c)/c*100)+"% sobre lo que invertiste":"";
+  }
   const q=$("q").value.trim().toLowerCase();
   const list=items.filter(it=>!q||it.n.toLowerCase().includes(q));
   $("tb").innerHTML=list.map(it=>{const st=status(it);
-    return `<tr data-e="${it.id}"><td>${esc(it.n)}</td><td>${upp(it)}</td><td>${pct(it)}%</td><td class="pr">${fmt.format(unitP(it))}</td><td>${fmt.format(packP(it))}</td><td>${fmtN(packsOf(it))}</td><td>${Number(it.s)||0}</td><td><span class="pill ${st[0]}">${st[1]}</span></td></tr>`}).join("");
+    return `<tr data-e="${it.id}"><td>${esc(it.n)}</td><td>${upp(it)}</td><td class="cg">${pct(it)}%</td><td class="pr">${fmt.format(unitP(it))}</td><td>${fmt.format(packP(it))}</td><td>${fmtN(packsOf(it))}</td><td>${Number(it.s)||0}</td><td><span class="pill ${st[0]}">${st[1]}</span></td></tr>`}).join("");
   $("em").innerHTML=list.length?"":(items.length?"Sin resultados":(own?"Todavía no cargaste productos.<br>Tocá “+ Agregar producto” para empezar.":"Todavía no hay productos cargados."));
   $("em").style.display=list.length?"none":"block";
   $("hint").textContent=own?"Tocá un producto para editarlo o registrar una venta":"Tocá un producto para registrar una venta";
@@ -308,7 +345,7 @@ function preview(){
 }
 function setRO(ro){
   ["fN","fU","fP","fG","fK","fM","fS"].forEach(i=>$(i).disabled=ro);
-  $("m").hidden=$("pl").hidden=$("save").hidden=ro;
+  $("m").hidden=$("pl").hidden=$("save").hidden=ro;$("wP").hidden=$("wG").hidden=$("pw").hidden=ro;
 }
 function openForm(id){
   const own=isOwner();if(!id&&!own)return;
@@ -409,12 +446,24 @@ async function loadEmp(){
   try{
     $("ec").textContent=await api("/rest/v1/rpc/mi_codigo",{method:"POST",body:{}});
     const ps=await api("/rest/v1/profiles?select=id,nombre,rol&order=nombre");
-    $("el").innerHTML=ps.map(p=>`<li>${esc(p.nombre)} <small style="display:inline">· ${p.rol==="dueno"?"Dueño":"Empleado"}</small>${p.rol==="empleado"?`<button class="q2" data-q="${p.id}">Quitar</button>`:""}</li>`).join("");
+    const main=isMain();
+    $("el").innerHTML=ps.map(p=>{
+      const lb=p.rol==="dueno"?"Dueño":p.rol==="socio"?"Socio":"Empleado";let b="";
+      if(p.rol==="empleado"){if(main)b+=`<button class="q2 ok2" data-s="${p.id}">Hacer socio</button>`;b+=`<button class="q2" data-q="${p.id}">Quitar</button>`}
+      else if(p.rol==="socio"&&main)b=`<button class="q2" data-ns="${p.id}">Quitar socio</button>`;
+      return `<li>${esc(p.nombre)} <small style="display:inline">· ${lb}</small>${b}</li>`}).join("");
   }catch(e){$("el").innerHTML="<li>"+esc(errMsg(e))+"</li>"}
 }
 $("eb").onclick=()=>{$("ec").textContent="…";$("el").innerHTML="<li>Cargando…</li>";$("ov3").classList.add("on");loadEmp()};
 $("er").onclick=async()=>{if(!confirm("Se cambia el código. El anterior deja de servir (los empleados actuales siguen adentro). ¿Seguir?"))return;try{await api("/rest/v1/rpc/regenerar_codigo",{method:"POST",body:{}});loadEmp()}catch(e){toast(errMsg(e))}};
-$("el").onclick=async e=>{const id=e.target.getAttribute&&e.target.getAttribute("data-q");if(!id||!confirm("¿Quitar a este empleado? Ya no va a poder ver el stock."))return;try{await api("/rest/v1/rpc/quitar_empleado",{method:"POST",body:{p_id:id}});loadEmp()}catch(x){toast(errMsg(x))}};
+$("el").onclick=async e=>{
+  const g=k=>e.target.getAttribute&&e.target.getAttribute(k);
+  const acc=g("data-s")?["hacer_socio",g("data-s"),"¿Nombrar socio a esta persona? Va a poder cargar productos y manejar empleados."]
+    :g("data-ns")?["quitar_socio",g("data-ns"),"¿Quitarle el rol de socio? Pasa a ser empleado."]
+    :g("data-q")?["quitar_empleado",g("data-q"),"¿Quitar a este empleado? Ya no va a poder ver el stock."]:null;
+  if(!acc||!confirm(acc[2]))return;
+  try{await api("/rest/v1/rpc/"+acc[0],{method:"POST",body:{p_id:acc[1]}});loadEmp()}catch(x){toast(errMsg(x))}
+};
 $("ex").onclick=()=>$("ov3").classList.remove("on");
 $("ov3").onclick=e=>{if(e.target===$("ov3"))$("ov3").classList.remove("on")};
 
