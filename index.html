@@ -93,6 +93,14 @@ label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 .res table{min-width:0}
 .res td,.res th{padding:10px 8px;font-size:13px}
 .res tfoot td{font-weight:700;border-top:1px solid var(--bd);border-bottom:0}
+.sheet select{font:inherit;color:var(--tx);background:#0c1622;border:1px solid var(--bd);border-radius:10px;padding:11px 12px;width:100%}
+.sheet h3{margin:16px 0 0;font-size:15px}
+.net.bad{background:#3a1414;border-color:#8a2a2a;color:#ffb3b3}
+.hl .g2{letter-spacing:1px;font-size:15px}
+.hl .r2{margin-top:6px;display:flex;gap:6px}
+.hl .r2 button{background:#0c1622;border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:6px 12px;font-size:13px}
+.hl small.rojo{color:var(--bad)}
+#oc,#oj{width:100%;margin:14px 0 0}
 .hl .ok2{border-color:var(--ok);color:var(--ok);margin-left:6px}
 .hl .q2{float:right;background:none;border:1px solid var(--bad);color:var(--bad);border-radius:8px;padding:3px 10px}
 .sale.in{border-color:#1f7a4a}
@@ -114,13 +122,30 @@ label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 </div>
 
 <div class="login" id="ob" hidden>
-  <h1>Bienvenido</h1><p>Creá tu negocio o unite al de tu jefe con un código.</p>
-  <label>Tu nombre</label><input id="oN" placeholder="Ej: Juan">
-  <label>Nombre de tu negocio</label><input id="oB" placeholder="Ej: Kiosco Don Pepe">
-  <button class="cta" id="oc">Crear mi negocio</button>
-  <p style="text-align:center;margin:14px 0 0;color:var(--mut)">— o —</p>
-  <label>Código de invitación (te lo da el dueño)</label><input id="oC" autocapitalize="characters" placeholder="Ej: A1B2C3D4">
-  <button class="ghost" id="oj">Unirme a un negocio</button>
+  <h1>Bienvenido</h1>
+  <div id="o0">
+    <p>¿Qué querés hacer?</p>
+    <button class="cta" id="ob1" style="margin-top:6px">Crear mi negocio</button>
+    <p style="text-align:center;margin:-4px 0 14px;font-size:13px">Necesitás una clave de licencia</p>
+    <button class="ghost" id="ob2">Unirme a un negocio</button>
+    <p style="text-align:center;margin:8px 0 0;font-size:13px">Necesitás el código que te dio el dueño</p>
+  </div>
+  <div id="o1" hidden>
+    <p>Creá tu negocio con tu clave de licencia.</p>
+    <label>Su nombre y apellido</label><input id="cN" placeholder="Ej: Pepe Rodríguez">
+    <label>Nombre del negocio</label><input id="cB" placeholder="Ej: Kiosco Don Pepe">
+    <label>Clave de licencia</label><input id="cL" autocapitalize="characters" placeholder="MS1-XXXXXX-XXXXXX-XXXXXX">
+    <label>CUIT del negocio (solo si tu licencia lo incluye)</label><input id="cC" inputmode="numeric" placeholder="20-12345678-9">
+    <button class="cta" id="oc">Crear negocio</button>
+    <button class="ghost" id="cb">Volver</button>
+  </div>
+  <div id="o2" hidden>
+    <p>Ingresá el código que te pasó el dueño.</p>
+    <label>Tu nombre</label><input id="jN" placeholder="Ej: Martín">
+    <label>Código de invitación</label><input id="jC" autocapitalize="characters" placeholder="Ej: A1B2C3D4">
+    <button class="cta" id="oj">Unirme</button>
+    <button class="ghost" id="jb">Volver</button>
+  </div>
   <div class="err" id="oe"></div>
   <button class="ghost" id="oo">Salir</button>
 </div>
@@ -128,6 +153,7 @@ label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 <div id="app" hidden>
 <div class="bar"><b id="bn">Panel de Stock</b><div class="me"><span id="who"></span><button id="out">Salir</button></div></div>
 <div class="net" id="net" hidden>Sin conexión: mostrando los últimos datos guardados</div>
+<div class="net" id="lic" hidden></div>
 
 <button class="cta" id="add">+ Agregar producto</button>
 
@@ -140,6 +166,8 @@ label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 <div class="set own-only"><div><b>% Ganancia general</b><small>Se usa si el producto no tiene el suyo</small></div><input id="gp" type="number" inputmode="decimal" step="0.1" min="0"></div>
 <button class="ghost" id="hb">Ver historial de movimientos</button>
 <button class="ghost" id="eb" hidden>Empleados y código de invitación</button>
+<button class="ghost own-only" id="lb">Licencia</button>
+<button class="ghost" id="ab" hidden>Administrar licencias</button>
 
 <input class="q" id="q" type="search" placeholder="Buscar producto…">
 <div class="tw"><table>
@@ -203,12 +231,37 @@ label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
   <div class="btns"><button id="ex">Cerrar</button></div>
 </div></div>
 
+<div class="ov" id="ov4"><div class="sheet">
+  <h2>Licencia</h2>
+  <p class="cd" id="lp" style="margin:0 0 6px"></p>
+  <label>Clave de licencia nueva</label><input id="rL" autocapitalize="characters" placeholder="MS1-XXXXXX-XXXXXX-XXXXXX">
+  <label>CUIT del negocio (solo si tu licencia lo incluye)</label><input id="rC" inputmode="numeric" placeholder="20-12345678-9">
+  <div class="err" id="re"></div>
+  <div class="btns"><button id="rx">Cerrar</button><button class="p" id="ra">Activar licencia</button></div>
+</div></div>
+
+<div class="ov" id="ov5"><div class="sheet">
+  <h2>Administrar licencias</h2>
+  <div class="two">
+    <div><label>Meses de licencia</label><select id="aM"><option value="1">1 mes</option><option value="2">2 meses</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="12">12 meses</option></select></div>
+    <div><label>Cantidad de claves</label><input id="aQ" type="number" inputmode="numeric" min="1" max="20" value="1"></div>
+  </div>
+  <label>CUIT del comercio (opcional)</label><input id="aC" inputmode="numeric" placeholder="20-12345678-9">
+  <label>Nota (opcional)</label><input id="aN" placeholder="Ej: Parrilla Don Pepe - mes de regalo">
+  <button class="cta" id="ag" style="margin:14px 0 0;width:100%">Crear licencia</button>
+  <div class="err" id="ae"></div>
+  <ul class="hl" id="an"></ul>
+  <h3>Licencias creadas</h3><ul class="hl" id="al"></ul>
+  <h3>Comercios</h3><ul class="hl" id="ac"></ul>
+  <div class="btns"><button id="ax">Cerrar</button></div>
+</div></div>
+
 <script>
 const URL_="https://igyluexmmdygxzognhad.supabase.co",KEY="sb_publishable_8pB-XmO8BAVDdW3aSXIqCg_IJAQREYE";
 const $=i=>document.getElementById(i);
 const fmt=new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",minimumFractionDigits:0,maximumFractionDigits:2});
 const fmtN=n=>new Intl.NumberFormat("es-AR",{maximumFractionDigits:2}).format(n);
-let S=null,me=null,items=[],gen=30,biz="Panel de Stock",editId=null,timer=null;
+let S=null,me=null,items=[],gen=30,biz="Panel de Stock",editId=null,timer=null,vence=null,isAdmin=false;
 const isOwner=()=>!!me&&(me.rol==="dueno"||me.rol==="socio");
 const isMain=()=>!!me&&me.rol==="dueno";
 const esc=t=>{const d=document.createElement("div");d.textContent=t==null?"":t;return d.innerHTML};
@@ -247,16 +300,16 @@ function status(it){const s=Number(it.s)||0,m=it.m===""||it.m==null?5:Number(it.
 /* ---------- Pantallas ---------- */
 function showLogin(msg){$("app").hidden=true;$("ob").hidden=true;$("login").hidden=false;$("le").textContent=msg||""}
 function showApp(){$("login").hidden=true;$("ob").hidden=true;$("app").hidden=false}
-function showOb(){$("login").hidden=true;$("app").hidden=true;$("ob").hidden=false;$("oe").textContent=""}
+function showOb(){$("login").hidden=true;$("app").hidden=true;$("ob").hidden=false;obStep(0)}
 function logout(){
-  S=null;me=null;items=[];clearInterval(timer);
+  S=null;me=null;items=[];vence=null;isAdmin=false;$("ab").hidden=true;clearInterval(timer);
   try{localStorage.removeItem("sb_session");localStorage.removeItem("sb_cache")}catch(e){}
-  close();$("ov2").classList.remove("on");$("ov3").classList.remove("on");showLogin("");
+  close();$("ov2").classList.remove("on");$("ov3").classList.remove("on");$("ov4").classList.remove("on");$("ov5").classList.remove("on");showLogin("");
 }
 function render(){
   const own=isOwner();
   $("bn").textContent=biz;$("who").textContent=me.nombre+(me.rol==="dueno"?" (dueño)":me.rol==="socio"?" (socio)":"");
-  $("add").hidden=!own;$("eb").hidden=!own;$("gp").disabled=!own;
+  renderLic(own);$("add").hidden=!own||licVencida();$("eb").hidden=!own;$("gp").disabled=!own;
   if(document.activeElement!==$("gp"))$("gp").value=gen;
   let c=0,v=0;
   items.forEach(it=>{const s=Number(it.s)||0;c+=s*costU(it);v+=s*unitP(it)});
@@ -282,10 +335,10 @@ function render(){
 }
 async function loadAll(){
   try{
-    const [pr,st]=await Promise.all([api("/rest/v1/products?select=*&order=created_at.desc"),api("/rest/v1/negocios?select=nombre,ganancia_general")]);
+    const [pr,st]=await Promise.all([api("/rest/v1/products?select=*&order=created_at.desc"),api("/rest/v1/negocios?select=nombre,ganancia_general,licencia_vence")]);
     items=pr.map(r=>({id:r.id,n:r.nombre,u:r.unidades_pack,p:Number(r.precio_mayor),g:r.ganancia==null?"":Number(r.ganancia),s:r.stock,m:r.stock_min==null?"":r.stock_min}));
-    if(st&&st[0]){gen=Number(st[0].ganancia_general);biz=st[0].nombre||biz}
-    try{localStorage.setItem("sb_cache",JSON.stringify({items,gen,biz,me}))}catch(e){}
+    if(st&&st[0]){gen=Number(st[0].ganancia_general);biz=st[0].nombre||biz;vence=st[0].licencia_vence||null}
+    try{localStorage.setItem("sb_cache",JSON.stringify({items,gen,biz,me,vence}))}catch(e){}
     $("net").hidden=true;
   }catch(e){
     if(e.name==="TypeError"){$("net").hidden=false}else if(S)toast(errMsg(e));
@@ -299,13 +352,15 @@ async function start(){
     me=p[0];
   }catch(e){
     if(e.name==="TypeError"){
-      try{const c=JSON.parse(localStorage.getItem("sb_cache")||"null");if(c){me=c.me;items=c.items;gen=c.gen;biz=c.biz}}catch(x){}
+      try{const c=JSON.parse(localStorage.getItem("sb_cache")||"null");if(c){me=c.me;items=c.items;gen=c.gen;biz=c.biz;vence=c.vence||null}}catch(x){}
       if(!me){showLogin("Sin conexión a internet");return}
       showApp();$("net").hidden=false;render();return;
     }
     showLogin(errMsg(e));return;
   }
   showApp();await loadAll();
+  try{isAdmin=(await api("/rest/v1/rpc/es_admin",{method:"POST",body:{}}))===true}catch(e){isAdmin=false}
+  $("ab").hidden=!isAdmin;
   clearInterval(timer);timer=setInterval(()=>{if(!document.hidden&&S&&me)loadAll()},20000);
 }
 
@@ -431,14 +486,66 @@ $("hb").onclick=async()=>{
 $("hc").onclick=()=>$("ov2").classList.remove("on");
 $("ov2").onclick=e=>{if(e.target===$("ov2"))$("ov2").classList.remove("on")};
 
+/* ---------- Licencia ---------- */
+const fdate=t=>new Date(t).toLocaleDateString("es-AR");
+const licVencida=()=>!!vence&&new Date(vence)<new Date();
+const licDias=()=>vence?Math.ceil((new Date(vence)-new Date())/864e5):null;
+function licText(){if(!vence)return"";return licVencida()?"Tu licencia venció el "+fdate(vence)+".":"Tu licencia vence el "+fdate(vence)+" (faltan "+licDias()+" días)."}
+function renderLic(own){
+  const b=$("lic");let t="",bad=false;
+  if(licVencida()){bad=true;t=own?"Tu licencia venció el "+fdate(vence)+". Podés ver el stock, pero no registrar movimientos. Ingresá una clave nueva.":"La licencia del negocio venció. Avisale al dueño para que la renueve."}
+  else if(own&&vence&&licDias()<=7)t="Tu licencia vence en "+licDias()+(licDias()===1?" día.":" días.");
+  b.hidden=!t;b.textContent=t;b.classList.toggle("bad",bad);
+  $("lb").textContent=vence?"Licencia: "+(licVencida()?"venció el ":"vence el ")+fdate(vence)+" · Renovar":"Licencia";
+}
+$("lb").onclick=()=>{$("lp").textContent=licText();$("rL").value="";$("rC").value="";$("re").textContent="";$("ov4").classList.add("on")};
+$("rx").onclick=()=>$("ov4").classList.remove("on");
+$("ov4").onclick=e=>{if(e.target===$("ov4"))$("ov4").classList.remove("on")};
+$("ra").onclick=async()=>{
+  if(!$("rL").value.trim()){$("rL").focus();return}
+  $("ra").disabled=true;$("re").textContent="";
+  try{await api("/rest/v1/rpc/renovar_licencia",{method:"POST",body:{p_licencia:$("rL").value,p_cuit:$("rC").value}});$("ov4").classList.remove("on");toast("Licencia renovada");await loadAll()}
+  catch(e){$("re").textContent=errMsg(e)}
+  $("ra").disabled=false;
+};
+
+/* ---------- Administrador de licencias ---------- */
+async function loadAdm(){
+  try{
+    const [ls,ns]=await Promise.all([api("/rest/v1/rpc/listar_licencias",{method:"POST",body:{}}),api("/rest/v1/rpc/listar_negocios_admin",{method:"POST",body:{}})]);
+    $("al").innerHTML=ls.length?ls.map(l=>`<li><b class="g2">${esc(l.codigo)}</b> <small style="display:inline">· ${l.meses} ${l.meses===1?"mes":"meses"}</small><small>${l.negocio?"Usada por "+esc(l.negocio):"Disponible"}${l.cuit?" · CUIT "+esc(l.cuit):""}${l.nota?" · "+esc(l.nota):""}</small></li>`).join(""):"<li>Todavía no creaste licencias.</li>";
+    $("ac").innerHTML=ns.length?ns.map(n=>{const x=n.vence&&new Date(n.vence)<new Date();return `<li>${esc(n.nombre)} <small style="display:inline">· ${esc(n.dueno||"")}</small><small class="${x?"rojo":""}">${n.vence?(x?"Vencida el ":"Vence el ")+fdate(n.vence):"Sin licencia"}</small></li>`}).join(""):"<li>Sin comercios todavía.</li>";
+  }catch(e){$("al").innerHTML="<li>"+esc(errMsg(e))+"</li>"}
+}
+$("ab").onclick=()=>{$("an").innerHTML="";$("ae").textContent="";$("ov5").classList.add("on");loadAdm()};
+$("ag").onclick=async()=>{
+  $("ae").textContent="";$("ag").disabled=true;
+  try{
+    const m=$("aM").value,codes=await api("/rest/v1/rpc/crear_licencias",{method:"POST",body:{p_meses:Number(m),p_cantidad:Number($("aQ").value)||1,p_cuit:$("aC").value,p_nota:$("aN").value}});
+    $("an").innerHTML=codes.map(c=>`<li><b class="g2" style="color:var(--ok)">${esc(c)}</b> <small style="display:inline">· ${m} ${m==="1"?"mes":"meses"}</small><div class="r2"><button data-cp="${esc(c)}">Copiar</button><button data-wa="${esc(c)}" data-m="${m}">WhatsApp</button></div></li>`).join("");
+    loadAdm();
+  }catch(e){$("ae").textContent=errMsg(e)}
+  $("ag").disabled=false;
+};
+$("an").onclick=e=>{
+  const g=k=>e.target.getAttribute&&e.target.getAttribute(k),c=g("data-cp"),w=g("data-wa");
+  if(c){if(navigator.clipboard)navigator.clipboard.writeText(c).then(()=>toast("Clave copiada")).catch(()=>prompt("Copiá la clave",c));else prompt("Copiá la clave",c)}
+  if(w){const m=g("data-m"),t="Tu licencia de Panel de Stock ("+m+(m==="1"?" mes":" meses")+"): "+w+"\nEntrá a "+location.origin+", tocá Crear cuenta y elegí Crear mi negocio.";window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank")}
+};
+$("ax").onclick=()=>$("ov5").classList.remove("on");
+$("ov5").onclick=e=>{if(e.target===$("ov5"))$("ov5").classList.remove("on")};
+
 /* ---------- Crear o unirse a un negocio ---------- */
+function obStep(n){["o0","o1","o2"].forEach((id,i)=>$(id).hidden=i!==n);$("oe").textContent=""}
+$("ob1").onclick=()=>obStep(1);$("ob2").onclick=()=>obStep(2);
+$("cb").onclick=()=>obStep(0);$("jb").onclick=()=>obStep(0);
 async function onb(fn,body,btn){
   $("oe").textContent="";btn.disabled=true;
   try{await api("/rest/v1/rpc/"+fn,{method:"POST",body});await start()}catch(e){$("oe").textContent=errMsg(e)}
   btn.disabled=false;
 }
-$("oc").onclick=()=>onb("crear_negocio",{p_negocio:$("oB").value,p_nombre:$("oN").value},$("oc"));
-$("oj").onclick=()=>onb("unirse_negocio",{p_codigo:$("oC").value,p_nombre:$("oN").value},$("oj"));
+$("oc").onclick=()=>onb("crear_negocio",{p_negocio:$("cB").value,p_nombre:$("cN").value,p_licencia:$("cL").value,p_cuit:$("cC").value},$("oc"));
+$("oj").onclick=()=>onb("unirse_negocio",{p_codigo:$("jC").value,p_nombre:$("jN").value},$("oj"));
 $("oo").onclick=logout;
 
 /* ---------- Empleados (solo dueño) ---------- */
